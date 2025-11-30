@@ -1,3 +1,11 @@
+Deck deck = new();
+
+while (true)
+{
+    Console.WriteLine(deck.DrawCard().ToString());
+    Console.ReadLine();
+}
+
 public enum Suit
 {
     Heart,
@@ -33,14 +41,40 @@ class Card
         Suit = suit;
         Rank = rank;
     }
+
+    public override string ToString() => $"{Suit} of {Rank}";
 }
 
 class Deck
 {
-    public List<Card> cards;
+    //    public List<Card> cards;
+
+    private Stack<Card> _cards;
 
     public Deck(int decks = 1)
     {
-        cards = new(52 * decks);
+        _cards = new(52 * decks);
+        Build(decks);
+    }
+
+    private void Build(int decks)
+    {
+        _cards.Clear();
+
+        for (int d = 0; d < decks; d++)
+        {
+            foreach (Suit s in Enum.GetValues(typeof(Suit)))
+            {
+                foreach (Rank r in Enum.GetValues(typeof(Rank)))
+                {
+                    _cards.Push(new Card(s, r));
+                }
+            }
+        }
+    }
+
+    public Card DrawCard()
+    {
+        return _cards.Pop();
     }
 }
