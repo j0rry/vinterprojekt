@@ -6,6 +6,7 @@ while (true)
     Console.ReadLine();
 }
 
+// Tillfälligt använder enums. Måste enklare kunna spara ner värde på korten.
 public enum Suit
 {
     Heart,
@@ -16,19 +17,19 @@ public enum Suit
 
 public enum Rank
 {
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    Jack,
-    Queen,
-    King,
-    Ace
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
+    Seven = 7,
+    Eight = 8,
+    Nine = 9,
+    Ten = 10,
+    Jack = 11,
+    Queen = 12,
+    King = 13,
+    Ace = 14
 }
 
 class Card
@@ -36,13 +37,15 @@ class Card
     public Suit Suit;
     public Rank Rank;
 
+    public int Value => (int)Rank;
+
     public Card(Suit suit, Rank rank)
     {
         Suit = suit;
         Rank = rank;
     }
 
-    public override string ToString() => $"{Suit} of {Rank}";
+    public override string ToString() => $"{Suit} of {Rank} {Value}";
 }
 
 class Deck
@@ -55,6 +58,7 @@ class Deck
     {
         _cards = new(52 * decks);
         Build(decks);
+        Shuffle();
     }
 
     private void Build(int decks)
@@ -73,8 +77,20 @@ class Deck
         }
     }
 
+    private void Shuffle()
+    {
+
+    }
+
     public Card DrawCard()
     {
         return _cards.Pop();
     }
+
+    public void AddCard(Card cardToAdd)
+    {
+        _cards.Push(cardToAdd);
+    }
+
+    public int Count => _cards.Count;
 }
