@@ -6,7 +6,6 @@ while (true)
     Console.ReadLine();
 }
 
-// Tillfälligt använder enums. Måste enklare kunna spara ner värde på korten.
 public enum Suit
 {
     Heart,
@@ -38,6 +37,11 @@ class Card
     public Rank Rank;
 
     public int Value => (int)Rank;
+
+    public virtual float GetMultiplier()
+    {
+        return 1;
+    }
 
     public Card(Suit suit, Rank rank)
     {
