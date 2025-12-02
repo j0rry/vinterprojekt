@@ -1,5 +1,6 @@
 Deck deck = new();
 
+
 while (true)
 {
     Console.WriteLine(deck.DrawTop().ToString());
@@ -11,7 +12,7 @@ public enum Suit
     Heart,
     Diamond,
     Club,
-    Spade
+    Spade,
 }
 
 public enum Rank
@@ -31,12 +32,29 @@ public enum Rank
     Ace = 14
 }
 
+class Joker : Card
+{
+    public Joker() : base(Suit.Spade, Rank.Ace)
+    {
+
+    }
+
+    public override int Value => 100;
+
+    public override float GetMultiplier()
+    {
+        return 2;
+    }
+
+    public override string ToString() => "Joker";
+}
+
 class Card
 {
     public Suit Suit;
     public Rank Rank;
 
-    public int Value => (int)Rank;
+    public virtual int Value => (int)Rank;
 
     public virtual float GetMultiplier()
     {
@@ -79,6 +97,9 @@ class Deck
                 }
             }
         }
+
+        _cards.Push(new Joker());
+        _cards.Push(new Joker());
     }
 
     private void Shuffle()
