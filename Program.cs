@@ -2,7 +2,7 @@ Deck deck = new();
 
 while (true)
 {
-    Console.WriteLine(deck.DrawCard().ToString());
+    Console.WriteLine(deck.DrawTop().ToString());
     Console.ReadLine();
 }
 
@@ -83,10 +83,10 @@ class Deck
 
     private void Shuffle()
     {
-
+        _cards = new Stack<Card>(_cards.OrderBy(card => Random.Shared.Next()));
     }
 
-    public Card DrawCard()
+    public Card DrawTop()
     {
         return _cards.Pop();
     }
