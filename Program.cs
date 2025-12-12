@@ -8,7 +8,7 @@ Deck deck = JsonSerializer.Deserialize<Deck>(result)!;
 Console.WriteLine(deck.deck_id);
 Console.WriteLine(deck.Count);
 
-DrawResponse draw = await deck.DrawCards(1, client);
+DrawResponse draw = await deck.DrawCards(20, client);
 
 foreach (Card card in draw.cards)
 {
@@ -26,7 +26,7 @@ class Deck
         string url = $"https://deckofcardsapi.com/api/deck/{deck_id}/draw/?count={amount}";
         string json = await client.GetStringAsync(url);
 
-        return JsonSerializer.Deserialize<DrawResponse>(json);
+        return JsonSerializer.Deserialize<DrawResponse>(json)!;
     }
 
     public int Count => remaining;
@@ -42,7 +42,7 @@ class DrawResponse
 class Card
 {
     public string code { get; set; }
-    public int value { get; set; }
+    public string value { get; set; }
     public string suit { get; set; }
 }
 
