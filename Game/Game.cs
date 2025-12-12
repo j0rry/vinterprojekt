@@ -36,8 +36,10 @@ public class Game
         // Game Loop
         while (handsRemaining > 0)
         {
+            Console.Clear();
             Console.WriteLine($"Round {round}");
             Console.WriteLine($"Remaining Cards: {deck.Count}");
+            Console.WriteLine($"Deck ID: {deck.ID}");
             UI.ShowHand(hand.Cards.ToArray());
 
             Console.ReadLine();

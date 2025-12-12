@@ -15,6 +15,7 @@ public class Deck
     }
 
     public int Count => remaining;
+    public string ID => deck_id!;
 }
 
 public class DrawResponse
