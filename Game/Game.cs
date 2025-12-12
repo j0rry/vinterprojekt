@@ -31,7 +31,7 @@ public class Game
 
         DrawResponse draw = await deck.DrawCardsAsync(8, client);
         if (draw.cards == null) return;
-
+        deck.remaining = draw.remaining;
 
         List<String[]> asciiCards = draw.cards.Select(c => c.GetAscii()).ToList();
         for (int line = 0; line < asciiCards[0].Length; line++)
