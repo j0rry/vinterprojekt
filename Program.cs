@@ -14,3 +14,14 @@ foreach (Card card in draw.cards)
 {
     Console.WriteLine(card);
 }
+
+List<String[]> asciiCards = draw.cards.Select(c => c.GetAscii()).ToList();
+// Print 5 lines (the height of each ASCII card)
+for (int line = 0; line < asciiCards[0].Length; line++)
+{
+    foreach (var card in asciiCards)
+    {
+        Console.Write(card[line] + "  ");   // two spaces between cards
+    }
+    Console.WriteLine();
+}
