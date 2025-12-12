@@ -6,119 +6,75 @@ string result = await client.GetStringAsync("https://deckofcardsapi.com/api/deck
 Console.WriteLine(result);
 Deck deck = JsonSerializer.Deserialize<Deck>(result)!;
 Console.WriteLine(deck.deck_id);
-Console.WriteLine(deck.remaining);
+Console.WriteLine(deck.Count);
 
-public enum Suit
-{
-    Heart,
-    Diamond,
-    Club,
-    Spade,
-}
+DrawResponse draw = await deck.DrawCards(1, client);
+Console.WriteLine($"{draw.cards[0].value} of {draw.cards[0].suit}");
 
-public enum Rank
+class Deck
 {
-    Two = 2,
-    Three = 3,
-    Four = 4,
-    Five = 5,
-    Six = 6,
-    Seven = 7,
-    Eight = 8,
-    Nine = 9,
-    Ten = 10,
-    Jack = 11,
-    Queen = 12,
-    King = 13,
-    Ace = 14
-}
+    public string deck_id { get; set; }
+    public int remaining { private get; set; }
 
-class Joker : Card
-{
-    public Joker() : base(Suit.Spade, Rank.Ace)
+    public async Task<DrawResponse> DrawCards(int amount, HttpClient client)
     {
+        if (amount < 0) return new DrawResponse();
+        string url = $"https://deckofcardsapi.com/api/deck/{deck_id}/draw/?count={amount}";
+        string json = await client.GetStringAsync(url);
 
+        return JsonSerializer.Deserialize<DrawResponse>(json);
     }
 
-    public override int Value => 100;
+    public int Count => remaining;
+}
 
-    public override float GetMultiplier()
-    {
-        return 2;
-    }
-
-    public override string ToString() => "Joker";
+class DrawResponse
+{
+    public bool success { get; set; }
+    public int remaining { get; set; }
+    public Card[] cards { get; set; }
 }
 
 class Card
 {
-    public Suit Suit;
-    public Rank Rank;
-
-    public virtual int Value => (int)Rank;
-
-    public virtual float GetMultiplier()
-    {
-        return 1;
-    }
-
-    public Card(Suit suit, Rank rank)
-    {
-        Suit = suit;
-        Rank = rank;
-    }
-
-    public override string ToString() => $"{Suit} of {Rank} {Value}";
+    public string code { get; set; }
+    public int value { get; set; }
+    public string suit { get; set; }
 }
 
-class Deck
-{
-    //    public List<Card> cards;
-    public string deck_id { get; set; }
-    public int remaining { get; set; }
+// class Card
+// {
+//     public Suit Suit;
+//     public Rank Rank;
 
-    // private Stack<Card> _cards;
+//     public virtual int Value => (int)Rank;
 
-    // public Deck(int decks = 1)
-    // {
-    //     _cards = new(52 * decks);
-    //     Build(decks);
-    //     Shuffle();
-    // }
+//     public virtual float GetMultiplier()
+//     {
+//         return 1;
+//     }
 
-    // private void Build(int decks)
-    // {
-    //     _cards.Clear();
+//     public Card(Suit suit, Rank rank)
+//     {
+//         Suit = suit;
+//         Rank = rank;
+//     }
 
-    //     for (int d = 0; d < decks; d++)
-    //     {
-    //         foreach (Suit s in Enum.GetValues(typeof(Suit)))
-    //         {
-    //             foreach (Rank r in Enum.GetValues(typeof(Rank)))
-    //             {
-    //                 _cards.Push(new Card(s, r));
-    //             }
-    //         }
-    //     }
+//     public override string ToString() => $"{Suit} of {Rank} {Value}";
+// }
+// class Joker : Card
+// {
+//     public Joker() : base(Suit.Spade, Rank.Ace)
+//     {
 
-    //     _cards.Push(new Joker());
-    //     _cards.Push(new Joker());
-    // }
+//     }
 
-    // private void Shuffle()
-    // {
-    //     _cards = new Stack<Card>(_cards.OrderBy(card => Random.Shared.Next()));
-    // }
+//     public override int Value => 100;
 
-    // public Card DrawTop()
-    // {
-    //     return _cards.Pop();
-    // }
+//     public override float GetMultiplier()
+//     {
+//         return 2;
+//     }
 
-    // public void AddCard(Card cardToAdd)
-    // {
-    //     _cards.Push(cardToAdd);
-    // }
-
-    public int Count => remaining;
-}
+//     public override string ToString() => "Joker";
+// }
