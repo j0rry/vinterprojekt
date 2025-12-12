@@ -8,7 +8,7 @@ Deck deck = JsonSerializer.Deserialize<Deck>(result)!;
 Console.WriteLine(deck.deck_id);
 Console.WriteLine(deck.Count);
 
-DrawResponse draw = await deck.DrawCards(20, client);
+DrawResponse draw = await deck.DrawCards(5, client);
 
 foreach (Card card in draw.cards)
 {
@@ -17,7 +17,7 @@ foreach (Card card in draw.cards)
 
 class Deck
 {
-    public string deck_id { get; set; }
+    public string? deck_id { get; set; }
     public int remaining { private get; set; }
 
     public async Task<DrawResponse> DrawCards(int amount, HttpClient client)
@@ -41,9 +41,9 @@ class DrawResponse
 
 class Card
 {
-    public string code { get; set; }
-    public string value { get; set; }
-    public string suit { get; set; }
+    public string? code { get; set; }
+    public string? value { get; set; } // Kommer nog att behöva använda tryparse för detta senare!
+    public string? suit { get; set; }
 }
 
 // class Card
