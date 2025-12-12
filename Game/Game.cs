@@ -27,11 +27,11 @@ public class Game
     private async Task StartRound()
     {
         Console.WriteLine($"Round {round}");
-        Console.WriteLine($"Remaining Cards: {deck.Count}");
 
         DrawResponse draw = await deck.DrawCardsAsync(8, client);
         if (draw.cards == null) return;
         deck.remaining = draw.remaining;
+        Console.WriteLine($"Remaining Cards: {deck.Count}");
 
         List<String[]> asciiCards = draw.cards.Select(c => c.GetAscii()).ToList();
         for (int line = 0; line < asciiCards[0].Length; line++)
