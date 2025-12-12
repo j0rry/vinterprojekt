@@ -21,7 +21,7 @@ class DrawResponse
 {
     public bool success { get; set; }
     public int remaining { get; set; }
-    public Card[] cards { get; set; }
+    public Card[]? cards { get; set; }
 }
 
 class Card
@@ -29,4 +29,6 @@ class Card
     public string? code { get; set; }
     public string? value { get; set; } // Kommer nog att behöva använda tryparse för detta senare!
     public string? suit { get; set; }
+
+    public override string ToString() => $"{value} of {suit}";
 }
