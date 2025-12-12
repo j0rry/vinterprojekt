@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+
 class Deck
 {
     public string? deck_id { get; set; }
@@ -30,5 +31,17 @@ class Card
     public string? value { get; set; } // Kommer nog att behöva använda tryparse för detta senare!
     public string? suit { get; set; }
 
-    public override string ToString() => $"{value} of {suit}";
+    string GetSuitSymbol()
+    {
+        return suit switch
+        {
+            "SPADES" => "♠",
+            "HEARTS" => "♥",
+            "DIAMONDS" => "♦",
+            "CLUBS" => "♣",
+            _ => "?"
+        };
+    }
+
+    public override string ToString() => $"{value} of {GetSuitSymbol()} ({suit})";
 }
