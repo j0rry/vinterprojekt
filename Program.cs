@@ -9,7 +9,11 @@ Console.WriteLine(deck.deck_id);
 Console.WriteLine(deck.Count);
 
 DrawResponse draw = await deck.DrawCards(1, client);
-Console.WriteLine($"{draw.cards[0].value} of {draw.cards[0].suit}");
+
+foreach (Card card in draw.cards)
+{
+    Console.WriteLine(card.value);
+}
 
 class Deck
 {
