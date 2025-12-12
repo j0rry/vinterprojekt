@@ -14,6 +14,14 @@ public class Deck
         return JsonSerializer.Deserialize<DrawResponse>(json)!;
     }
 
+    public Card DrawOne()
+    {
+        HttpClient client = new();
+        DrawResponse draw = DrawCardsAsync(1, client).Result;
+        remaining = draw.remaining;
+        return draw.cards[0];
+    }
+
     public int Count => remaining;
     public string ID => deck_id!;
 }

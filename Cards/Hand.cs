@@ -13,4 +13,41 @@ public class Hand
         }
         deck.remaining = draw.remaining;
     }
+
+    public void DrawToFull(Deck deck)
+    {
+        while (Cards.Count < 8)
+        {
+            Cards.Add(deck.DrawOne());
+        }
+    }
+
+    public List<Card> SelectCards()
+    {
+        List<Card> selected = new();
+
+        Console.Write("> ");
+
+        string input = Console.ReadLine()!;
+        string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string part in parts)
+        {
+            if (int.TryParse(part, out int index))
+            {
+                if (index >= 1 && index <= Cards.Count)
+                {
+                    selected.Add(Cards[index - 1]);
+                }
+            }
+        }
+
+        return selected;
+    }
+
+    public void RemoveCards(List<Card> toRemove)
+    {
+        foreach (Card card in toRemove)
+            Cards.Remove(card);
+    }
 }
