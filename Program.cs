@@ -1,7 +1,5 @@
 
-Game g = new();
-await g.StartAsync();
-
+await new Game().StartAsync();
 
 
 // HttpClient client = new();
@@ -18,4 +16,3 @@ await g.StartAsync();
 // {
 //     Console.WriteLine(card);
 // }
-

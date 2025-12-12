@@ -7,6 +7,9 @@ public class Game
     private int money;
     private int round = 1;
 
+    private int handsRemaining = 3;
+    private int discardsRemaining = 3;
+
     public Game()
     {
         client = new();
@@ -20,28 +23,26 @@ public class Game
 
     private async Task LoadDeck()
     {
-        string result = await client.GetStringAsync("https://deckofcardsapi.com/api/deck/new/shuffle/"); // Hämtar ett nytt deck med 2 jokerar
+        string result = await client.GetStringAsync("https://deckofcardsapi.com/api/deck/new/shuffle/"); // Hämtar ett shuffled deck :)
         deck = JsonSerializer.Deserialize<Deck>(result)!;
     }
 
     private async Task StartRound()
     {
-        Console.WriteLine($"Round {round}");
 
-        DrawResponse draw = await deck.DrawCardsAsync(8, client);
-        if (draw.cards == null) return;
-        deck.remaining = draw.remaining;
-        Console.WriteLine($"Remaining Cards: {deck.Count}");
+        Hand hand = new();
+        await hand.FirstDraw(deck, client);
 
-        List<String[]> asciiCards = draw.cards.Select(c => c.GetAscii()).ToList();
-        for (int line = 0; line < asciiCards[0].Length; line++)
+        // Game Loop
+        while (handsRemaining > 0)
         {
-            foreach (var card in asciiCards)
-            {
-                Console.Write(card[line] + "  ");
-            }
-            Console.WriteLine();
+            Console.WriteLine($"Round {round}");
+            Console.WriteLine($"Remaining Cards: {deck.Count}");
+            UI.ShowHand(hand.Cards.ToArray());
+
+            Console.ReadLine();
         }
+
 
     }
 }
