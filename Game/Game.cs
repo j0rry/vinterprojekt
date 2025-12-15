@@ -6,6 +6,7 @@ public class Game
     private HttpClient client;
     private int money;
     private int round = 1;
+    private int blind = 500;
 
     bool test = false;
     private int handsRemaining = 3;
@@ -54,6 +55,7 @@ public class Game
                     foreach (Card c in playCards)
                         Console.WriteLine(c);
                     hand.RemoveCards(playCards);
+                    Console.WriteLine(ValidateCards(playCards.ToArray()));
                     hand.DrawToFull(deck);
                     test = true;
                     break;
@@ -63,6 +65,26 @@ public class Game
                     break;
             }
         }
+    }
+
+    private int ValidateCards(Card[] playedHand)
+    {
+        int total = 0;
+        int multiplier = 0;
+
+        if (playedHand == null) return 0;
+        foreach (Card c in playedHand)
+        {
+            for (int i = 0; i < playedHand.Length; i++)
+            {
+                if (c.GetValue() == playedHand[i].GetValue())
+                {
+                    multiplier++;
+                    total = c.GetValue();
+                }
+            }
+        }
+        return total * multiplier;
     }
 
     private void ShowOptions()
