@@ -49,7 +49,6 @@ public class Game
         // Game Loop
         while (handsRemaining > 0)
         {
-            if (!test) Console.Clear();
             Console.WriteLine($"Deck ID: {deck.ID} \n");
             Console.WriteLine($"<ROUND> {round}");
             Console.WriteLine($" <Score> {score} / {blind}");
@@ -80,6 +79,20 @@ public class Game
             //         break;
             // }
         }
+    }
+
+
+    public enum HandTypes
+    {
+        HighCard,
+        Pair,
+        TwoPair,
+        ThreeOfAKind,
+        Straight,
+        Flush,
+        FullHouse,
+        FourOfAKind,
+        StraightFlush
     }
 
     private int ValidateCards(Card[] playedHand)
@@ -122,7 +135,18 @@ public class Game
             }
         }
 
+        if (IsFlush(playedHand)) return 999999999;
         return total;
+    }
+
+    private bool IsFlush(Card[] playedCards)
+    {
+        return true;
+    }
+
+    private bool IsStraight(int[] values)
+    {
+        return true;
     }
 
     private void HandOptions(Card[] hand)
