@@ -55,7 +55,7 @@ public class Card
 
         return new[]
         {
-            $"{num,5}",
+            $"{num, 5}",
             "┌───────┐",
             $"│{GetDisplayValue(),-2}     │",
             $"│   {symbol}   │",

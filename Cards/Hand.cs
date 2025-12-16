@@ -24,25 +24,32 @@ public class Hand
 
     public List<Card> SelectCards()
     {
-        List<Card> selected = new();
-
-        Console.Write("> ");
-
-        string input = Console.ReadLine()!;
-        string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (string part in parts)
+        while (true)
         {
-            if (int.TryParse(part, out int index))
+            List<Card> selected = new();
+
+            Console.Write("> ");
+            string input = Console.ReadLine()!;
+            string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length > 5 || parts.Length == 0)
             {
-                if (index >= 1 && index <= Cards.Count)
+                Console.WriteLine("You can only select max 5 cards");
+                continue;
+            }
+
+            foreach (string part in parts)
+            {
+                if (int.TryParse(part, out int index))
                 {
-                    selected.Add(Cards[index - 1]);
+                    if (index >= 1 && index <= Cards.Count)
+                    {
+                        selected.Add(Cards[index - 1]);
+                    }
                 }
             }
+            return selected;
         }
-
-        return selected;
     }
 
     public void RemoveCards(List<Card> toRemove)
