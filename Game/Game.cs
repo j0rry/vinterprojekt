@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 public class Game
@@ -26,7 +28,7 @@ public class Game
 
     private async Task LoadDeck()
     {
-        string result = await client.GetStringAsync("https://deckofcardsapi.com/api/deck/new/shuffle/"); // Hämtar ett shuffled deck :)
+        string result = await client.GetStringAsync("https://deckofcardsapi.com/api/deck/new/"); // Hämtar ett shuffled deck :)
         deck = JsonSerializer.Deserialize<Deck>(result)!;
     }
 
@@ -82,7 +84,7 @@ public class Game
     }
 
 
-    public enum HandTypes
+    public enum HandType
     {
         HighCard,
         Pair,
@@ -95,58 +97,67 @@ public class Game
         StraightFlush
     }
 
-    private int ValidateCards(Card[] playedHand)
+    HandType DetectHand(Card[] playedHand)
     {
-        if (playedHand == null || playedHand.Length == 0) return 0;
-        int total = 0;
-        Dictionary<int, int> counts = new();
+        bool flush = IsFlush(playedHand);
+        bool straight = IsStraight(playedHand);
 
-        foreach (Card c in playedHand)
+        if (straight && flush) return HandType.StraightFlush;
+        if (straight) return HandType.Straight;
+        if (flush) return HandType.Flush;
+
+        return HandType.HighCard;
+    }
+
+    private int ScoreHand(Card[] playedHand)
+    {
+        // if (playedHand == null || playedHand.Length == 0) return 0;
+        // int total = 0;
+        // Dictionary<int, int> counts = new();
+
+        // foreach (Card c in playedHand)
+        // {
+        //     int value = c.GetValue();
+        //     if (counts.ContainsKey(value))
+        //         counts[value]++;
+        //     else
+        //         counts[value] = 1;
+        // }
+
+        // if (IsFlush(playedHand)) Console.WriteLine("Flush!"); ;
+        // if (IsStraight(playedHand)) Console.WriteLine("Straight!");
+
+        // if (counts.All(k => k.Value == 1))
+        //     return counts.Keys.Max();
+        HandType type = DetectHand(playedHand);
+
+        return type switch
         {
-            int value = c.GetValue();
-            if (counts.ContainsKey(value))
-                counts[value]++;
-            else
-                counts[value] = 1;
-        }
-
-        if (counts.All(kvp => kvp.Value == 1))
-            return counts.Keys.Max();
-
-        foreach (var kvp in counts)
-        {
-            int value = kvp.Key;
-            int count = kvp.Value;
-
-            switch (count)
-            {
-                case 1:
-                    total += value;
-                    break;
-                case 2:
-                    total += value * 2 + 5;
-                    break;
-                case 3:
-                    total += value * 3 + 10;
-                    break;
-                case 4:
-                    total += value * 4 + 20;
-                    break;
-            }
-        }
-
-        if (IsFlush(playedHand)) return 999999999;
-        return total;
+            HandType.Straight => 50,
+            HandType.Flush => 60,
+            HandType.StraightFlush => 80,
+            HandType.HighCard => 10,
+            _ => 0
+        };
     }
 
     private bool IsFlush(Card[] playedCards)
     {
-        return true;
+        if (playedCards.Length != 5) return false;
+        return playedCards.All(c => c.suit == playedCards[0].suit);
     }
 
-    private bool IsStraight(int[] values)
+    private bool IsStraight(Card[] playedCards)
     {
-        return true;
+        int[] values = playedCards.Select(c => c.GetValue()).ToArray();
+        if (values.Length != 5) return false;
+
+        values = values.Distinct().OrderBy(v => v).ToArray();
+        if (values.Length != 5) return false;
+
+        bool normalStraight = values[4] - values[0] == 4;
+
+        return normalStraight;
     }
 
     private void HandOptions(Card[] hand)
@@ -162,7 +173,7 @@ public class Game
         switch (choice)
         {
             case 1:
-                score += ValidateCards(hand);
+                score += ScoreHand(hand);
                 handsRemaining--;
                 break;
             default:
