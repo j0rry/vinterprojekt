@@ -49,12 +49,13 @@ public class Card
         };
     }
 
-    public string[] GetAscii()
+    public string[] GetAscii(int num)
     {
         string symbol = GetSuitSymbol();
 
         return new[]
         {
+            $"{num,5}",
             "┌───────┐",
             $"│{GetDisplayValue(),-2}     │",
             $"│   {symbol}   │",

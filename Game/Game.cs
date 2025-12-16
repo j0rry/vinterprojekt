@@ -7,6 +7,7 @@ public class Game
     private int money;
     private int round = 1;
     private int blind = 500;
+    private int score;
 
     bool test = false;
     private int handsRemaining = 3;
@@ -39,56 +40,98 @@ public class Game
         {
             if (!test) Console.Clear();
             Console.WriteLine($"Round {round}");
+            Console.WriteLine($"Score {score} / {blind}");
             Console.WriteLine($"Remaining Cards: {deck.Count}");
             Console.WriteLine($"Deck ID: {deck.ID}");
             UI.ShowHand(hand.Cards.ToArray());
 
-            int numChoice;
-            ShowOptions();
-            Console.Write("> ");
-            while (!int.TryParse(Console.ReadLine(), out numChoice)) Console.WriteLine("A number Please!");
+            Card[] playCards = hand.SelectCards().ToArray();
+            HandOptions(playCards);
+            hand.RemoveCards(playCards.ToList());
+            hand.DrawToFull(deck);
 
-            switch (numChoice)
-            {
-                case 1:
-                    List<Card> playCards = hand.SelectCards();
-                    foreach (Card c in playCards)
-                        Console.WriteLine(c);
-                    hand.RemoveCards(playCards);
-                    Console.WriteLine(ValidateCards(playCards.ToArray()));
-                    hand.DrawToFull(deck);
-                    test = true;
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice!");
-                    test = false;
-                    break;
-            }
+            // switch (numChoice)
+            // {
+            //     case 1:
+            //         List<Card> playCards = hand.SelectCards();
+            //         foreach (Card c in playCards)
+            //             Console.WriteLine(c);
+            //         hand.RemoveCards(playCards);
+            //         score = ValidateCards(playCards.ToArray());
+            //         hand.DrawToFull(deck);
+            //         test = true;
+            //         break;
+            //     default:
+            //         Console.WriteLine("Invalid choice!");
+            //         test = false;
+            //         break;
+            // }
         }
     }
 
     private int ValidateCards(Card[] playedHand)
     {
+        if (playedHand == null || playedHand.Length == 0) return 0;
         int total = 0;
-        int multiplier = 0;
+        Dictionary<int, int> counts = new();
 
-        if (playedHand == null) return 0;
         foreach (Card c in playedHand)
         {
-            for (int i = 0; i < playedHand.Length; i++)
+            int value = c.GetValue();
+            if (counts.ContainsKey(value))
+                counts[value]++;
+            else
+                counts[value] = 1;
+        }
+
+        if (counts.All(kvp => kvp.Value == 1))
+            return counts.Keys.Max();
+
+        foreach (var kvp in counts)
+        {
+            int value = kvp.Key;
+            int count = kvp.Value;
+
+            switch (count)
             {
-                if (c.GetValue() == playedHand[i].GetValue())
-                {
-                    multiplier++;
-                    total = c.GetValue();
-                }
+                case 1:
+                    total += value;
+                    break;
+                case 2:
+                    total += value * 2 + 5;
+                    break;
+                case 3:
+                    total += value * 3 + 10;
+                    break;
+                case 4:
+                    total += value * 4 + 20;
+                    break;
             }
         }
-        return total * multiplier;
+
+        return total;
     }
 
-    private void ShowOptions()
+    private void HandOptions(Card[] hand)
     {
-        Console.WriteLine("[1] Select Cards");
+        Console.WriteLine("[1] Use Hand [2] Discard Hand");
+        Console.Write("> ");
+        int choice;
+        while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 2)
+        {
+            Console.WriteLine("1 or 2 :D");
+        }
+
+        switch (choice)
+        {
+            case 1:
+                score += ValidateCards(hand);
+                break;
+            default:
+                Console.WriteLine("Discarded");
+                break;
+        }
+
+
     }
 }
