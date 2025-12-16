@@ -97,7 +97,7 @@ public class Game
         StraightFlush
     }
 
-    HandType DetectHand(Card[] playedHand)
+    private HandType DetectHand(Card[] playedHand)
     {
         bool flush = IsFlush(playedHand);
         bool straight = IsStraight(playedHand);
@@ -139,6 +139,13 @@ public class Game
             HandType.HighCard => 10,
             _ => 0
         };
+    }
+
+
+    // Hämta antallet "duplicates" för att checka pairs etc
+    private Dictionary<int, int> GetCount()
+    {
+        return new();
     }
 
     private bool IsFlush(Card[] playedCards)
