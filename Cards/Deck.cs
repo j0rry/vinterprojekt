@@ -8,7 +8,7 @@ public class Deck
 
     public int TotalRemaining => remainingApiCards + extraCards.Count;
 
-    private readonly Stack<Card> extraCards = new();
+    private readonly List<Card> extraCards = new();
 
     public async Task<DrawResponse> DrawFromApiAsync(int amount, HttpClient client)
     {
@@ -20,9 +20,16 @@ public class Deck
 
     public async Task<Card> DrawOneAsync(HttpClient client)
     {
-        if (extraCards.Count > 0)
+
+        int extraCount = extraCards.Count;
+        int roll = Random.Shared.Next(TotalRemaining);
+
+
+        if (roll < extraCount)
         {
-            Card card = extraCards.Pop();
+            int index = Random.Shared.Next(extraCards.Count);
+            Card card = extraCards[index];
+            extraCards.RemoveAt(index);
             return card;
         }
         DrawResponse draw = await DrawFromApiAsync(1, client);
@@ -32,7 +39,7 @@ public class Deck
 
     public void AddCards(Card cards)
     {
-        extraCards.Push(cards);
+        extraCards.Add(cards);
     }
 
     public string ID => deck_id!;

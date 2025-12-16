@@ -10,7 +10,7 @@ public class Game
     private int score;
 
     bool test = false;
-    private int handsRemaining = 3;
+    private int handsRemaining = 1000;
     private int discardsRemaining = 3;
 
     public Game()
@@ -37,7 +37,13 @@ public class Game
 
         Card sCard = new();
         sCard.suit = "Special";
-        sCard.value = "100";
+        sCard.value = "?";
+        deck.AddCards(sCard);
+        deck.AddCards(sCard);
+        deck.AddCards(sCard);
+        deck.AddCards(sCard);
+        deck.AddCards(sCard);
+        deck.AddCards(sCard);
         deck.AddCards(sCard);
 
         // Game Loop
