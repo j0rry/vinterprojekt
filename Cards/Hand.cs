@@ -2,23 +2,23 @@
 public class Hand
 {
     public List<Card> Cards { get; private set; } = new();
+    public int maxHandSize = 8;
 
     public async Task FirstDraw(Deck deck, HttpClient client)
     {
-        DrawResponse draw = await deck.DrawCardsAsync(8, client);
-        if (draw.cards == null) return;
-        foreach (Card card in draw.cards)
+        Cards.Clear();
+
+        for (int i = 0; i < maxHandSize; i++)
         {
-            Cards.Add(card);
+            Cards.Add(await deck.DrawOneAsync(client));
         }
-        deck.remaining = draw.remaining;
     }
 
-    public void DrawToFull(Deck deck)
+    public async Task DrawToFullAsync(Deck deck, HttpClient client)
     {
-        while (Cards.Count < 8)
+        while (Cards.Count < maxHandSize)
         {
-            Cards.Add(deck.DrawOne());
+            Cards.Add(await deck.DrawOneAsync(client));
         }
     }
 

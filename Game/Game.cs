@@ -35,20 +35,27 @@ public class Game
         Hand hand = new();
         await hand.FirstDraw(deck, client);
 
+        Card sCard = new();
+        sCard.suit = "Special";
+        sCard.value = "100";
+        deck.AddCards(sCard);
+
         // Game Loop
         while (handsRemaining > 0)
         {
             if (!test) Console.Clear();
-            Console.WriteLine($"Round {round}");
-            Console.WriteLine($"Score {score} / {blind}");
-            Console.WriteLine($"Remaining Cards: {deck.Count}");
-            Console.WriteLine($"Deck ID: {deck.ID}");
+            Console.WriteLine($"Deck ID: {deck.ID} \n");
+            Console.WriteLine($"<ROUND> {round}");
+            Console.WriteLine($" <Score> {score} / {blind}");
+            Console.WriteLine($" <Remaining Cards>: {deck.TotalRemaining}");
+            Console.WriteLine($" <Hands left>: {handsRemaining}\n Discards left: {discardsRemaining} \n");
+            Console.WriteLine($" <Money>: {money}\n");
             UI.ShowHand(hand.Cards.ToArray());
 
             Card[] playCards = hand.SelectCards().ToArray();
             HandOptions(playCards);
             hand.RemoveCards(playCards.ToList());
-            hand.DrawToFull(deck);
+            await hand.DrawToFullAsync(deck, client);
 
             // switch (numChoice)
             // {
@@ -126,9 +133,11 @@ public class Game
         {
             case 1:
                 score += ValidateCards(hand);
+                handsRemaining--;
                 break;
             default:
                 Console.WriteLine("Discarded");
+                discardsRemaining--;
                 break;
         }
 
