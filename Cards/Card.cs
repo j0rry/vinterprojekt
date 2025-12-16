@@ -2,7 +2,7 @@
 public class Card
 {
     public string? code { get; set; }
-    public string? value { private get; set; } // Kommer nog att behöva använda tryparse för detta senare!
+    public string? value { private get; set; }
     public string? suit { get; set; }
 
     private string GetSuitSymbol()
